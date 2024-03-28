@@ -1,8 +1,9 @@
-import { Actor } from 'apify';
-import { CheerioCrawler, KeyValueStore } from 'crawlee';
+import { Actor, Dataset, RequestQueue } from 'apify';
+import { CheerioCrawler, KeyValueStore, RequestProvider } from 'crawlee';
 import { Input, RouteLabels } from './types.js';
 import { router } from './routes.js';
 import { linkGenerators } from './helpers.js';
+import { serverStore } from './stores/server-store.js';
 
 /**
  * The plan
@@ -52,14 +53,19 @@ import { linkGenerators } from './helpers.js';
  *      Maybe it could also hold RequestQueue key (the keys would be the same)? That would be awesome.
  * 
  * TODOs:
- *      Check how to save images
- *      Make review scraping a reality
+ *      Check how to save images - DONT
+ *      Make review scraping a reality - not a priority, because there are almost no reviews
  *      Check if I can set default input values to NULL (via INPUT_SCHEMA)
  */
 
 await Actor.init();
 
 export const input = ((await KeyValueStore.getInput()) || {}) as Input;
+export const keyValueStore = await Actor.openKeyValueStore(input.sessionId || undefined);
+export const dataset = await Actor.openDataset(input.sessionId || undefined);
+
+// Init store
+// await serverStore.initStore(keyValueStore, 5000);
 
 const crawler = new CheerioCrawler({
     requestHandler: router,
@@ -76,7 +82,8 @@ const crawler = new CheerioCrawler({
             maxErrorScore: 1
         }
     },
-    maxRequestRetries: 10
+    maxRequestRetries: 10,
+    requestQueue: await Actor.openRequestQueue(input.sessionId || undefined) // Handle the session ID
 });
 
 await crawler.addRequests([

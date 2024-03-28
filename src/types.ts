@@ -14,6 +14,10 @@ export enum EntityType {
     Category = "category"
 }
 
+export enum StoreKeys {
+    StoreStoreKey = "ServerStore"
+}
+
 
 export interface Input {
     startPageNumber: number;
@@ -33,6 +37,7 @@ export interface Input {
 }
 
 export interface ServerDetail {
+    id: string;
     name: string;
     description: string;
     category: string;
@@ -43,6 +48,10 @@ export interface ServerDetail {
     };
     iconUrl: string | null;
     joinLinkUrl: string | null;
+    /**
+     * ISO-format.
+     */
+    bumpedAt: string | null;
 }
 
 export interface Output {
