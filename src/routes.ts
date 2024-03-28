@@ -2,11 +2,12 @@ import { createCheerioRouter } from "crawlee";
 import { Output, RouteLabels, ServerDetail } from "./types.js";
 import { fetchImageBlob, linkGenerators } from "./helpers.js";
 import { Actor } from "apify";
+import { input } from "./main.js";
 
 export const router = createCheerioRouter();
 
 router.addHandler(RouteLabels.ServerList, async ({ $, crawler, request }) => {
-    console.log(`Current page number: ${request.userData.currentPageNumber}/${request.userData.input.endPageNumber}`);
+    console.log(`Current page number: ${request.userData.currentPageNumber}/${input.endPageNumber}`);
     console.log(`Crawling page "${request.url}"`);
 
     // Firstly add all detail routes
@@ -32,7 +33,7 @@ router.addHandler(RouteLabels.ServerList, async ({ $, crawler, request }) => {
         ]);
     }
 
-    if (request.userData.currentPageNumber >= request.userData.input.endPageNumber) {
+    if (request.userData.currentPageNumber >= input.endPageNumber) {
         // Don't do anything, we are finished
         console.log('Crawler has reached the end page.');
         return;
@@ -43,7 +44,7 @@ router.addHandler(RouteLabels.ServerList, async ({ $, crawler, request }) => {
     // Then next page until we satisfy the input
     await crawler.addRequests([
         {
-            url: linkGenerators.serverList({...request.userData.input, page: currentPageNumber}),
+            url: linkGenerators.serverList({...input, page: currentPageNumber}),
             label: RouteLabels.ServerList,
             userData: {
                 ...request.userData,

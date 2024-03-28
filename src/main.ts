@@ -1,6 +1,6 @@
 import { Actor } from 'apify';
 import { CheerioCrawler, KeyValueStore } from 'crawlee';
-import { EntityType, Input, RouteLabels, ServerListSort } from './types.js';
+import { Input, RouteLabels } from './types.js';
 import { router } from './routes.js';
 import { linkGenerators } from './helpers.js';
 
@@ -50,11 +50,15 @@ import { linkGenerators } from './helpers.js';
  *  A new value in INPUT called 'session'?
  *      Which will hold the key to the KeyValueStore, so that the process can be resumed. (the KeyValueStore will hold the server IDs)
  *      Maybe it could also hold RequestQueue key (the keys would be the same)? That would be awesome.
+ * 
+ * TODOs:
+ *      Check how to save images
+ *      Make review scraping a reality
  */
 
 await Actor.init();
 
-const input = ((await KeyValueStore.getInput()) || {}) as Input;
+export const input = ((await KeyValueStore.getInput()) || {}) as Input;
 
 const crawler = new CheerioCrawler({
     requestHandler: router,
@@ -79,8 +83,7 @@ await crawler.addRequests([
         url: linkGenerators.serverList({...input, page: input.startPageNumber }),
         label: RouteLabels.ServerList,
         userData: {
-            currentPageNumber: input.startPageNumber,
-            input
+            currentPageNumber: input.startPageNumber
         }
     }
 ]);
