@@ -54,6 +54,7 @@ import { linkGenerators } from './helpers.js';
  * TODOs:
  *      Check how to save images
  *      Make review scraping a reality
+ *      Check if I can set default input values to NULL (via INPUT_SCHEMA)
  */
 
 await Actor.init();
