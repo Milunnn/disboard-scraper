@@ -18,7 +18,7 @@ export enum EntityType {
 export interface Input {
     startPageNumber: number;
     endPageNumber: number;
-    
+
     entity: {
         type: EntityType;
         name: string;
@@ -26,6 +26,9 @@ export interface Input {
     sort: ServerListSort | null;
     langCode: string | null;
 
+    /**
+     * Holds the name of the KeyValueStore, Dataset and RequestQueue, so that this Actor is resumable.
+     */
     sessionId: string | null;
 }
 
