@@ -1,17 +1,21 @@
 import { EntityType, Input, ServerListSort } from "./types.js";
 
+type ServerListInputType = Pick<Input, 'entity' | 'langCode' | 'sort'> & {
+    page: number;
+}
+
 class LinkGenerators {
 
     public rootUrl() {
         return 'https://disboard.org';
     }
 
-    public serverList({ entityType, entityName, page, sort, langCode }: { entityType?: string; entityName?: string; page?: number; sort?: ServerListSort; langCode?: string; }) { // TODO - langCode should be optional in the URL (can be undefined for all languages)
+    public serverList({ entity, page, sort, langCode }: ServerListInputType) { // TODO - langCode should be optional in the URL (can be undefined for all languages)
         // return `${linkGenerators.rootUrl()}/servers/${entityType}/${entityName}/${page}?sort=${sort}&fl=${langCode}`; // TODO - maybe could build it using URL and SearchParams
         let base = `${linkGenerators.rootUrl()}/servers`;
 
-        if (entityType && entityName) {
-            base = `${base}/${entityType}/${entityName}`;
+        if (entity) {
+            base = `${base}/${entity.type}/${entity.name}`;
         }
 
         if (page && page != 1) {

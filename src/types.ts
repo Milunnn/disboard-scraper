@@ -18,11 +18,15 @@ export enum EntityType {
 export interface Input {
     startPageNumber: number;
     endPageNumber: number;
+    
+    entity: {
+        type: EntityType;
+        name: string;
+    } | null;
+    sort: ServerListSort | null;
+    langCode: string | null;
 
-    entityName: string;
-    entityType: EntityType;
-    sort?: ServerListSort;
-    langCode?: string;
+    sessionId: string | null;
 }
 
 export interface ServerDetail {
