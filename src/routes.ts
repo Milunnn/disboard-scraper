@@ -1,13 +1,13 @@
 import { createCheerioRouter } from "crawlee";
-import { SearchType, RouteHandlerLabels, ServerDetail } from "./types.js";
 import { getUrlFromSearchType, linkGenerators } from "./helpers.js";
 import { dataset, input } from "./main.js";
 import { serverStore } from "./stores/server-store.js";
+import { RouteHandlerLabels, SearchType, ServerDetail } from "./types.js";
 
 export const router = createCheerioRouter();
 
 
-router.addHandler(RouteHandlerLabels.GetSearchType, async ({ $, crawler, request }) => {
+router.addHandler(RouteHandlerLabels.GetSearchType, async ({ crawler, request }) => {
     const { url, loadedUrl, userData } = request;
 
     const searchType = url != loadedUrl ? SearchType.Tag : SearchType.Search;
@@ -103,7 +103,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
     ]);
 });
 
-router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request, response }) => {
+router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, request, response }) => {
 
     // If the status is 404, just ignore it, because this happens only when the server detail is somehow not available
     // How do I access the status code

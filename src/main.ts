@@ -1,9 +1,9 @@
-import { Actor, Dataset, RequestQueue } from 'apify';
-import { CheerioCrawler, KeyValueStore, RequestProvider } from 'crawlee';
-import { InputSearch, RouteHandlerLabels } from './types.js';
+import { Actor } from 'apify';
+import { CheerioCrawler, KeyValueStore } from 'crawlee';
+import { initForKeyword } from './helpers.js';
 import { router } from './routes.js';
-import { initForKeyword, linkGenerators } from './helpers.js';
 import { serverStore } from './stores/server-store.js';
+import { InputSearch } from './types.js';
 
 /**
  * The plan for now:

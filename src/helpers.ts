@@ -1,5 +1,5 @@
 import { CheerioCrawler } from "crawlee";
-import { SearchType, InputSearch, RouteHandlerLabels } from "./types.js";
+import { InputSearch, RouteHandlerLabels, SearchType } from "./types.js";
 
 type ServerListInputType = Pick<InputSearch, 'langCode' | 'sort'> & {
     page: number;
