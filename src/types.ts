@@ -1,10 +1,5 @@
 
 export enum RouteHandlerLabels {
-    // ServerList = "ServerList",
-    // ServerSearch = "ServerSearch",
-    // ServerSearchRedirectCheck = "ServerSearchRedirectCheck",
-    // ServerDetail = "ServerDetail",
-
     GetSearchType = "GetSearchType",
     ServerList = "ServerList",
     ServerDetail = "ServerDetail"
@@ -25,31 +20,14 @@ export enum StoreKeys {
     StoreStoreKey = "ServerStore"
 }
 
-
-export interface Input {
-    startPageNumber: number;
-    endPageNumber: number;
-
-    entity: {
-        type: SearchType;
-        name: string;
-    } | null;
+export interface InputSearch {
+    keywords: Array<string>;
     sort: ServerListSort | null;
     langCode: string | null;
 
     /**
      * Holds the name of the KeyValueStore, Dataset and RequestQueue, so that this Actor is resumable.
      */
-    sessionId: string | null;
-
-
-}
-
-export interface InputSearch {
-    keywords: Array<string>;
-    sort: ServerListSort | null;
-    langCode: string | null;
-
     sessionId: string | null;
 
     startPageNumber: number | null;
@@ -72,8 +50,4 @@ export interface ServerDetail {
      * ISO-format.
      */
     bumpedAt: string | null;
-}
-
-export interface Output {
-    servers: Array<ServerDetail>;
 }

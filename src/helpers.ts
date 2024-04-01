@@ -1,8 +1,12 @@
 import { CheerioCrawler } from "crawlee";
-import { SearchType, Input, InputSearch, RouteHandlerLabels } from "./types.js";
+import { SearchType, InputSearch, RouteHandlerLabels } from "./types.js";
 
-type ServerListInputType = Pick<Input, 'entity' | 'langCode' | 'sort'> & {
+type ServerListInputType = Pick<InputSearch, 'langCode' | 'sort'> & {
     page: number;
+    search?: {
+        type: SearchType;
+        keyword: string;
+    };
 }
 type SearchInputType = Pick<InputSearch, 'langCode' | 'sort'> & {
     keyword: string;
@@ -16,17 +20,12 @@ class LinkGenerators {
         return 'https://disboard.org';
     }
 
-    public serverList({ entity, page, sort, langCode }: ServerListInputType) { // TODO - langCode should be optional in the URL (can be undefined for all languages)
-        // return `${linkGenerators.rootUrl()}/servers/${entityType}/${entityName}/${page}?sort=${sort}&fl=${langCode}`; // TODO - maybe could build it using URL and SearchParams
+    public serverList({ search, page, sort, langCode }: ServerListInputType) {
         let base = `${linkGenerators.rootUrl()}/servers`;
 
-        if (entity) {
-            base = `${base}/${entity.type}/${entity.name}`;
+        if (search) {
+            base = `${base}/${search.type}/${search.keyword}`;
         }
-
-        // if (page && page != 1) {
-        //     base = `${base}/${page}`;
-        // }
 
         const params = new URLSearchParams();
 
@@ -96,6 +95,6 @@ export function getUrlFromSearchType(input: SearchInputType, searchType: SearchT
 
     return linkGenerators.serverList({
         ...input,
-        entity: { type: SearchType.Tag, name: input.keyword }
+        search: { type: SearchType.Tag, keyword: input.keyword }
     })
 }
