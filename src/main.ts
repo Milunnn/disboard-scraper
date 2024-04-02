@@ -20,11 +20,22 @@ import { InputSearch } from './types.js';
 
 await Actor.init();
 
-export const input = ((await KeyValueStore.getInput()) || {}) as InputSearch;
+export const input: InputSearch = {
+    // The defaults here
+    startPageNumber: null,
+    endPageNumber: null,
+    langCode: null,
+    sort: null,
+    scrapeReviews: null,
+    sessionId: null,
+    
+    // Overrides
+    ...((await KeyValueStore.getInput()) || {}) as Partial<InputSearch> & Pick<InputSearch, "keywords"> // Keywords is required
+};
 export const keyValueStore = await Actor.openKeyValueStore(input.sessionId || undefined);
 export const dataset = await Actor.openDataset(input.sessionId || undefined);
 
-// Init store
+
 await serverStore.initStore(keyValueStore, -1);
 
 const crawler = new CheerioCrawler({
