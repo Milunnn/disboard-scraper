@@ -65,7 +65,6 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
 
     // Check if we are being shown results
     if ($('.summary').length == 0 || $('.listing').length == 0) {
-        // Something happened
         throw 'Crawler is not on the search results page.';
     }
 
@@ -76,7 +75,6 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
     }
 
     if (input.endPageNumber && currentPageNumber >= input.endPageNumber) {
-        // Don't do anything, we are finished
         console.log(`Crawler has reached the end page for keyword '${keyword}'`);
         return;
     }
@@ -104,8 +102,6 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
 
 router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request, response }) => {
 
-    // If the status is 404, just ignore it, because this happens only when the server detail is somehow not available
-    // How do I access the status code
     if (response.statusCode == 404) {
         console.log(`Request for URL '${request.url}' returned 404, skipping...`);
         return;
@@ -122,31 +118,21 @@ router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request,
     };
 
     if (!id) {
-        // It would proably be better if I just stored the data without id, but I want clean data and there is a big probability that this works.
-        // What if by skipping this, I actually lose potencial data...shouldn't I throw an error so that this request is retried?
-        // console.log(`Could not get id from '${request.url}'. Skipping server.`);
-        // return;
         throw `Could not get id from '${request.url}'.`;
     }
     if (serverStore.contains(id)) {
-        // Skip if the store already contains this server
         console.log(`Server with id '${id}' is already in the collection, skipping...`)
         return;
     }
 
-    // Icon
     const iconUrlString = $('.server-icon img').attr('data-src'); // It is lazy-loaded, so I need to access this attribute, for src attribute is not set because of that
-    // const iconBlob = iconUrlString ? await fetchImageBlob(iconUrlString) : null; // Lets not do it rn
 
-    // Join link
     const joinRelativeUri = $('.fixed-join-button a').attr('href');
     if (!joinRelativeUri) {
-        // Same thing here  as with the id?
         console.log(`Anchor for server '${name}' at '${request.url}' did not contain href attribute. Setting to null.`);
     }
     const joinUrlString = joinRelativeUri ? new URL(joinRelativeUri, linkGenerators.rootUrl()).href : null;
 
-    // Save it to a dataset
     const serverData: ServerDetail = {
         id,
         name,
@@ -161,10 +147,8 @@ router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request,
         reviews: []
     };
 
-    // Save the server ID to the store
     serverStore.push(id);
 
-    // If we don"t want to scrape reviews, just push all of the data to the dataset and end
     if (input.scrapeReviews === false) {
         await dataset.pushData(serverData);
         return;

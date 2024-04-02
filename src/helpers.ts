@@ -65,7 +65,6 @@ class LinkGenerators {
     }
 
     reviews({ serverId, page }: ServerReviewInputType) {
-        //server/reviews/595999872222756885?page=5
         let base = `${this.rootUrl()}/server/reviews/${serverId}`;
 
         const params = new URLSearchParams();
