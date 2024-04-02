@@ -1,0 +1,57 @@
+{
+    "title": "Disboard scraper",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "keywords": {
+            "title": "Keywords/Tags",
+            "type": "array",
+            "description": "Keywords (search phrases) to search through (tags are also supported).",
+            "prefill": [ "community" ],
+            "editor": "stringList"
+        },
+        "sort": {
+            "title": "Sort",
+            "type": "string",
+            "description": "How to sort the servers.",
+            "editor": "select",
+            "enum": [ "member_count", "bumped_at" ],
+            "enumTitles": [ "By member count" , "By bump date"],
+            "nullable": true
+        },
+        "langCode": {
+            "title": "Language code",
+            "type": "string",
+            "description": "The language code to be used in the query for filtration of the servers. Uses ISO 639-1 standard.",
+            "editor": "textfield",
+            "nullable": true
+        },
+        "startPageNumber": {
+            "title": "Starting page number",
+            "type": "integer",
+            "description": "The page at which the scraper should start. Allowed range is from 1 to 50.",
+            "editor": "number",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 50
+        },
+        "endPageNumber": {
+            "title": "Ending page number",
+            "type": "integer",
+            "description": "The page at which the scraper should end. Allowed range is from 1 to 50. Should be larger than or equal to Starting page number.",
+            "editor": "number",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 50
+        },
+        "scrapeReviews": {
+            "title": "Scrape reviews",
+            "type": "boolean",
+            "description": "Whether to go through all reviews of the found servers, set to false to omit doing that.",
+            "editor": "checkbox",
+            "nullable": true,
+            "default": true
+        }
+    },
+    "required": [ "keywords" ]
+}
