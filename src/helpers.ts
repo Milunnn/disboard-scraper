@@ -79,13 +79,6 @@ class LinkGenerators {
 
 export const linkGenerators = new LinkGenerators();
 
-export const fetchImageBlob = async (src: string) => {
-    const resp = await fetch(src);
-    const data = await resp.blob();
-
-    return data;
-}
-
 /**
  * Parses the date from the dicord format, and returns ISO date format.
  * @param dateString The date in format like "2023-07-02 19:30:07 (UTC)".
