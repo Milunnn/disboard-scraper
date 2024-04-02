@@ -19,15 +19,12 @@ export default abstract class PersistedStore<T extends {}, SerializedT extends {
     protected abstract deserializeValue(val: SerializedT): T;
 
     private async save() {
-        // await Actor.setValue(this.persistKey, this.state);
         if (!this.state) return;
         await this.store?.setValue(this.persistKey, this.serializeValue(this.state));
     }
 
     private async load() {
-        // const loadedState = await Actor.getValue(this.persistKey) as (T | null);
-        const loadedState = await this.store?.getValue(this.persistKey) as (any | null);
-        // this.state = loadedState || {...this.getDefaultValue()};
+        const loadedState = await this.store?.getValue(this.persistKey) as (SerializedT | null);
         this.state = (loadedState && this.deserializeValue(loadedState)) || this.getDefaultValue();
 
         // For logging purposes, write the correct thing
@@ -41,9 +38,8 @@ export default abstract class PersistedStore<T extends {}, SerializedT extends {
             }, logIntervalMs);
         }
 
-        // Setup loss mitigation
+        // Persist state
         Actor.on('persistState', async () => {
-            // Save the store data and unregister - seems like this handler is called at the end of each Actor run
             await this.save();
         });
         Actor.on('migrating', async () => {
