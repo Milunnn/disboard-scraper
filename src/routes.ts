@@ -1,8 +1,8 @@
 import { createCheerioRouter } from "crawlee";
-import { getUrlFromSearchType, linkGenerators } from "./helpers.js";
+import { getUrlFromSearchType, linkGenerators, parseAttrDateToISO } from "./helpers.js";
 import { dataset, input } from "./main.js";
 import { serverStore } from "./stores/server-store.js";
-import { RouteHandlerLabels, SearchType, ServerDetail } from "./types.js";
+import { RouteHandlerLabels, SearchType, ServerDetail, ServerReview } from "./types.js";
 
 export const router = createCheerioRouter();
 
@@ -49,8 +49,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
         const url = new URL(relativeUri, linkGenerators.rootUrl());
         const absoluteUrlString = url.href;
 
-        const bumpedAtReplaced = bumpedAtText?.replace('(', '')?.replace(')', '');
-        const bumpedAtISO = (bumpedAtReplaced && new Date(bumpedAtReplaced).toISOString()) || null;
+        const bumpedAtISO = (bumpedAtText && parseAttrDateToISO(bumpedAtText)) || null;
 
         await crawler.addRequests([
             {
@@ -103,7 +102,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
     ]);
 });
 
-router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, request, response }) => {
+router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request, response }) => {
 
     // If the status is 404, just ignore it, because this happens only when the server detail is somehow not available
     // How do I access the status code
@@ -157,11 +156,90 @@ router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, request, response
         userCount,
         iconUrl: iconUrlString || null,
         joinLinkUrl: joinUrlString,
-        bumpedAt: request.userData.bumpedAt
+        bumpedAt: request.userData.bumpedAt,
+        reviews: []
     };
-
-    await dataset.pushData(serverData);
 
     // Save the server ID to the store
     serverStore.push(id);
+
+    // If we don"t want to scrape reviews, just push all of the data to the dataset and end
+    if (input.scrapeReviews === false) {
+        await dataset.pushData(serverData);
+        return;
+    }
+
+    await crawler.addRequests([
+        {
+            url: linkGenerators.reviews({ serverId: id, page: 1 }),
+            label: RouteHandlerLabels.ServerReviewList,
+            userData: {
+                ...request.userData,
+                serverData,
+                reviewPage: 1
+            }
+        }
+    ]);
+});
+
+// Don't know how should this be saved in continual fashion
+router.addHandler(RouteHandlerLabels.ServerReviewList, async ({ $, crawler, request }) => {
+
+    const serverData = request.userData.serverData as ServerDetail;
+    const reviews = serverData.reviews;
+
+    const reviewCards = $('.review-card');
+
+    for (const card of reviewCards) {
+        const authorName = $(card).find('.author-name').text().trim();
+
+        const createdAtString = $(card).find('.review-created-at').attr('title');
+        const createdAtISO = (createdAtString && parseAttrDateToISO(createdAtString)) || null;
+
+        const thumbCount = parseInt($(card).find('.thumb-count').text().trim()) || 0;
+
+        const ratingAttr = $(card).find('.review-stars').attr('title');
+        const ratingText = (ratingAttr && ratingAttr.match(/^(\d)\/\d .+/)?.[1]) || null;
+        const rating = (ratingText && ratingText.length > 0) ? parseInt(ratingText) : null;
+
+        const title = $(card).find('.review-title').text().trim();
+        const body = $(card).find('.card-body').text().trim();
+
+        reviews.push({
+            author: authorName,
+            reviewedAt: createdAtISO,
+            thumbs: thumbCount,
+            rating,
+            title,
+            body
+        })
+    }
+
+    // Detect if we are at the end
+    // - If yes, push all of the data into the dataset
+    // - If not, pass the data via userData to the next page of the reviews
+
+    const paginationExists = $('.pagination').length > 0;
+    const isAtEnd = $('.pagination > .next.disabled').length >= 1;
+
+    if ((!paginationExists || isAtEnd) || reviewCards.length == 0) {
+        console.log(`Crawler has reached the end page of reviews for server '${serverData.id}'.`);
+
+        await dataset.pushData(serverData);
+
+        return;
+    }
+
+    const reviewPage = request.userData.reviewPage + 1;
+    
+    await crawler.addRequests([
+        {
+            url: linkGenerators.reviews({ serverId: serverData.id, page: reviewPage }),
+            label: RouteHandlerLabels.ServerReviewList,
+            userData: {
+                ...request.userData,
+                reviewPage
+            }
+        }
+    ]);
 });

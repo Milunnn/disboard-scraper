@@ -13,6 +13,10 @@ type SearchInputType = Pick<InputSearch, 'langCode' | 'sort'> & {
     page: number;
     randomParam?: boolean;
 };
+type ServerReviewInputType = {
+    serverId: string;
+    page: number;
+};
 
 class LinkGenerators {
 
@@ -21,7 +25,7 @@ class LinkGenerators {
     }
 
     public serverList({ search, page, sort, langCode }: ServerListInputType) {
-        let base = `${linkGenerators.rootUrl()}/servers`;
+        let base = `${this.rootUrl()}/servers`;
 
         if (search) {
             base = `${base}/${search.type}/${search.keyword}`;
@@ -39,7 +43,7 @@ class LinkGenerators {
     }
 
     search({ keyword, langCode, sort, page, randomParam }: SearchInputType) {
-        let base = `${linkGenerators.rootUrl()}/search`;
+        let base = `${this.rootUrl()}/search`;
 
         const params = new URLSearchParams();
 
@@ -60,6 +64,17 @@ class LinkGenerators {
         return base;
     }
 
+    reviews({ serverId, page }: ServerReviewInputType) {
+        //server/reviews/595999872222756885?page=5
+        let base = `${this.rootUrl()}/server/reviews/${serverId}`;
+
+        const params = new URLSearchParams();
+
+        params.set('page', `${page}`);
+
+        return `${base}?${params.toString()}`;
+    }
+
 }
 
 export const linkGenerators = new LinkGenerators();
@@ -69,6 +84,17 @@ export const fetchImageBlob = async (src: string) => {
     const data = await resp.blob();
 
     return data;
+}
+
+/**
+ * Parses the date from the dicord format, and returns ISO date format.
+ * @param dateString The date in format like "2023-07-02 19:30:07 (UTC)".
+ */
+export function parseAttrDateToISO(dateString: string) {
+    const replaced = dateString.replace('(', '').replace(')', '');
+    const ISO = new Date(replaced).toISOString();
+
+    return ISO;
 }
 
 /**

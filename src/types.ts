@@ -2,7 +2,8 @@
 export enum RouteHandlerLabels {
     GetSearchType = "GetSearchType",
     ServerList = "ServerList",
-    ServerDetail = "ServerDetail"
+    ServerDetail = "ServerDetail",
+    ServerReviewList = "ServerReviewList"
 }
 
 export enum ServerListSort {
@@ -32,6 +33,8 @@ export interface InputSearch {
 
     startPageNumber: number | null;
     endPageNumber: number | null;
+
+    scrapeReviews: boolean | null;
 }
 
 export interface ServerDetail {
@@ -50,4 +53,20 @@ export interface ServerDetail {
      * ISO-format.
      */
     bumpedAt: string | null;
+    reviews: Array<ServerReview>;
+}
+
+export interface ServerReview {
+    author: string;
+    thumbs: number;
+    /**
+     * Out of 5.
+     */
+    rating: number | null;
+    title: string;
+    body: string;
+    /**
+     * ISO-formatted string.
+     */
+    reviewedAt: string | null;
 }
