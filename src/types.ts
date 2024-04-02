@@ -47,6 +47,7 @@ export interface ServerDetail {
         total: number;
         online: number;
     };
+    disboardServerUrl: string;
     iconUrl: string | null;
     joinLinkUrl: string | null;
     /**
