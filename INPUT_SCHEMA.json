@@ -47,7 +47,7 @@
         "scrapeReviews": {
             "title": "Scrape reviews",
             "type": "boolean",
-            "description": "Whether to go through all reviews of the found servers, set to false to omit doing that.",
+            "description": "Whether to go through all reviews of the found servers. Will take up more requests and take longer to complete.",
             "editor": "checkbox",
             "nullable": true,
             "default": true
