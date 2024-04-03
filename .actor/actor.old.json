@@ -14,19 +14,21 @@
             "actorSpecification": 1,
             "views": {
                 "overview": {
-                    "title": "Overview",
+                    "title": "Disboard Scraper Dataset overview",
                     "transformation": {
                         "fields": [
 							"name",
-							"iconUrl",
+                            "id",
 							"tags",
 							"category",
 							"userCount.total",
 							"userCount.online",
 							"bumpedAt",
-							"reviews",
+							"description",
 							"disboardServerUrl",
-							"joinLinkUrl"
+							"iconUrl",
+							"joinLinkUrl",
+							"reviews"
                         ],
 						"flatten": [
 							"userCount"
@@ -39,10 +41,10 @@
                                 "label": "Name",
                                 "format": "text"
                             },
-							"iconUrl": {
-								"label": "Icon",
-								"format": "image"
-							},
+                            "id": {
+                                "label": "ID",
+                                "format": "text"
+                            },
                             "tags": {
                                 "label": "Tags"
                             },
@@ -62,17 +64,25 @@
 								"label": "Last bump date",
 								"format": "date"
 							},
-							"reviews": {
-								"label": "Reviews",
-								"format": "array"
+							"description": {
+								"label": "Description",
+								"format": "text"
 							},
 							"disboardServerUrl": {
 								"label": "Disboard server URL",
 								"format": "link"
 							},
+							"iconUrl": {
+								"label": "Server icon URL",
+								"format": "image"
+							},
 							"joinLinkUrl": {
 								"label": "Join server URL",
 								"format": "link"
+							},
+							"reviews": {
+								"label": "Reviews",
+								"format": "array"
 							}
                         }
                     }
