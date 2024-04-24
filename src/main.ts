@@ -48,16 +48,21 @@ const crawler = new CheerioCrawler({
             await dataset.pushData(request.userData.serverData);
         }
     },
+    errorHandler: ({ response, session }) => {
+        if (session && response?.statusCode == 403) {
+            session.markBad();
+        }
+    },
     proxyConfiguration: await Actor.createProxyConfiguration({
         groups: ['RESIDENTIAL']
     }),
     sessionPoolOptions: {
         sessionOptions: {
-            maxUsageCount: 3, // Heavily rate limited, need to rotate sessions (throws 403)
+            maxUsageCount: 5, // Heavily rate limited, need to rotate sessions (throws 403)
             maxErrorScore: 1
         }
     },
-    maxRequestRetries: 10, 
+    maxRequestRetries: 20,
     requestQueue: await Actor.openRequestQueue(input.sessionId || undefined) // Handle the session ID
 });
 
