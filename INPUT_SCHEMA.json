@@ -47,7 +47,7 @@
         "scrapeDetail": {
             "title": "Scrape data from detail",
             "type": "boolean",
-            "description": "Whether to navigate to detail page of each server. Will take up drastically more requests and take longer to complete.",
+            "description": "Whether to navigate to detail page of each server to obtain more fields (total user count, reviews (optionally)). Will take up more requests and take longer to complete.",
             "editor": "checkbox",
             "nullable": true,
             "default": false
