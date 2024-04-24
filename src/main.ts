@@ -3,7 +3,7 @@ import { CheerioCrawler, KeyValueStore } from 'crawlee';
 import { initForKeyword } from './helpers.js';
 import { router } from './routes.js';
 import { serverStore } from './stores/server-store.js';
-import { InputSearch } from './types.js';
+import { InputSearch, RouteHandlerLabels } from './types.js';
 
 /**
  * The plan for now:
@@ -40,8 +40,12 @@ await serverStore.initStore(keyValueStore, -1);
 
 const crawler = new CheerioCrawler({
     requestHandler: router,
-    failedRequestHandler: () => {
-
+    failedRequestHandler: async ({ request }) => {
+        if (request.userData.label === RouteHandlerLabels.ServerReviewList && request.userData.serverData) {
+            // If it crashes on reviews, push the data to the dataset anyway - even though not all were successful
+            console.log(`Failed request handler for server "${request.userData.serverData.name}" while scraping reviews. Saving the intermediate.`);
+            await dataset.pushData(request.userData.serverData);
+        }
     },
     proxyConfiguration: await Actor.createProxyConfiguration({
         groups: ['RESIDENTIAL']
