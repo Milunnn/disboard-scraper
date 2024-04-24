@@ -8,20 +8,18 @@ Extracts descriptions, images, ratings, reviews, user counts, even join links, a
 
 Reasons:
 
-- Simple
-- Automatic duplicate detecting and filtering
-- Handles timeouts
-- Output fields sanitization
+- Simple, no time wasted trying to configure inputs
+- Automatic duplicate detection and filtering
 
 Want to collect or track data about active/large servers? This is the way to do it!
 
 ## How much will scraping Disboard cost you?
 
-To obtain 1000 results, the cost is approximately $. The Apify Free plan will therefore cover more than !!
+To obtain 1000 results, the cost is approximately $ 0.3. The Apify Free plan will therefore cover up to 15000 results!
 
 ## How to scrape Disboard
 
-1. Go to the top of page [Disboard Scraper]() on the Apify platform
+1. Go to the top of page [Disboard Scraper](https://apify.com/milunnn/disboard-scraper) on the Apify platform
 2. Click the *Try for free* button
 3. Fill the inputs with desired query values
 4. Click the *Start* button
@@ -45,7 +43,7 @@ Example input for getting the first 10 pages (circ. ~240 results) of largest ser
 }
 ```
 
-Click on the [Input]() tab for more information.
+Click on the [Input](https://apify.com/milunnn/disboard-scraper/input-schema) tab for more information.
 
 ## Output
 
