@@ -50,7 +50,6 @@ const crawler = new CheerioCrawler({
     proxyConfiguration: await Actor.createProxyConfiguration({
         groups: ['RESIDENTIAL']
     }),
-    useSessionPool: true,
     sessionPoolOptions: {
         sessionOptions: {
             maxUsageCount: 5,
