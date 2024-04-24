@@ -1,5 +1,4 @@
-
-## What does Disboard Scraper do?
+## What does Disboard Scraper do?
 
 This is a simple scraper which purpose is to obtain data about servers located on [Disboard](https://disboard.org/), providing a simple API to describe what results you are looking for. Note that this Actor does NOT bypass the limitations of https://disboard.org/, meaning that the amount of pages scraped per tag is limited to **50** (circ. ~1200 results).
 
