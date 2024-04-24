@@ -2,7 +2,7 @@ import { createCheerioRouter, log } from "crawlee";
 import { getUrlFromSearchType, linkGenerators, parseAttrDateToISO } from "./helpers.js";
 import { dataset, input } from "./main.js";
 import { serverStore } from "./stores/server-store.js";
-import { RouteHandlerLabels, SearchType, ServerDetail, ServerReview } from "./types.js";
+import { RouteHandlerLabels, SearchType, ServerDetail } from "./types.js";
 
 export const router = createCheerioRouter();
 
