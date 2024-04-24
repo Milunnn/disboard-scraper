@@ -33,8 +33,12 @@ class LinkGenerators {
 
         const params = new URLSearchParams();
 
-        if (sort) params.set('sort', sort);
-        if (langCode) params.set('fl', langCode);
+        if (sort) {
+            params.set('sort', sort);
+        }
+        if (langCode) {
+            params.set('fl', langCode);
+        }
         params.set('page', `${page}`);
 
         base = `${base}?${params.toString()}`;
@@ -49,8 +53,12 @@ class LinkGenerators {
 
         params.set('keyword', keyword);
 
-        if (sort) params.set('sort', sort);
-        if (langCode) params.set('fl', langCode);
+        if (sort) {
+            params.set('sort', sort);
+        }
+        if (langCode) {
+            params.set('fl', langCode);
+        }
         params.set('page', `${page}`);
 
         if (randomParam) {

@@ -45,12 +45,16 @@ export default abstract class PersistedStore<T extends {}, SerializedT extends {
         Actor.on('migrating', async () => {
             await this.save();
 
-            if (this.interval) clearInterval(this.interval);
+            if (this.interval) {
+                clearInterval(this.interval);
+            }
         });
         Actor.on('aborting', async () => {
             await this.save();
 
-            if (this.interval) clearInterval(this.interval);
+            if (this.interval) {
+                clearInterval(this.interval);
+            }
         });
 
         // Init the store
