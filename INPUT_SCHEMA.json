@@ -50,7 +50,7 @@
             "description": "Whether to navigate to detail page of each server. Will take up drastically more requests and take longer to complete.",
             "editor": "checkbox",
             "nullable": true,
-            "default": true
+            "default": false
         },
         "scrapeReviews": {
             "title": "Scrape reviews",
@@ -58,7 +58,7 @@
             "description": "Requires `scrapeDetail` to function. Whether to go through all reviews of the found servers. Will take up more requests and take longer to complete.",
             "editor": "checkbox",
             "nullable": true,
-            "default": true
+            "default": false
         }
     },
     "required": [ "keywords" ]
