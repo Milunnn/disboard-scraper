@@ -1,4 +1,4 @@
-import { createCheerioRouter } from "crawlee";
+import { createCheerioRouter, log } from "crawlee";
 import { getUrlFromSearchType, linkGenerators, parseAttrDateToISO } from "./helpers.js";
 import { dataset, input } from "./main.js";
 import { serverStore } from "./stores/server-store.js";
@@ -51,16 +51,60 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
 
         const bumpedAtISO = (bumpedAtText && parseAttrDateToISO(bumpedAtText)) || null;
 
-        await crawler.addRequests([
-            {
-                url: absoluteUrlString,
-                label: RouteHandlerLabels.ServerDetail,
-                userData: {
-                    bumpedAt: bumpedAtISO,
-                    keyword
+        if (input.scrapeDetail) {
+            await crawler.addRequests([
+                {
+                    url: absoluteUrlString,
+                    label: RouteHandlerLabels.ServerDetail,
+                    userData: {
+                        bumpedAt: bumpedAtISO,
+                        keyword
+                    }
                 }
-            }
-        ]);
+            ]);
+            return;
+        }
+
+        const id = relativeUri.match(/.+?(\d+)\/?/)?.[1];
+        const onlineUserCount = parseInt($(card).find(".server-member-counts .server-online").text().trim());
+        const description = $(card).find(".server-description").text().trim();
+        const category = $(card).find('.server-category').text().trim();
+        const tags = $(card).find('.server-tags .name').toArray().map(e => $(e).text().trim());
+
+        const iconUrlString = $(card).find('.server-icon img').attr('data-src'); // It is lazy-loaded, so I need to access this attribute, for src attribute is not set because of that
+        const joinRelativeUri = $(card).find('.server-join a').attr('href');
+        if (!joinRelativeUri) {
+            log.warning(`Link for server '${name}' at '${request.url}' did not contain href attribute. Setting to null.`);
+        }
+        const joinUrlString = joinRelativeUri ? new URL(joinRelativeUri, linkGenerators.rootUrl()).href : null;
+
+        if (!id) {
+            throw `Could not get id from '${request.url}'.`;
+        }
+        if (serverStore.contains(id)) {
+            log.info(`Server with id '${id}' is already in the collection, skipping...`)
+            return;
+        }
+
+        const serverData: ServerDetail = {
+            id,
+            name,
+            description,
+            category,
+            tags,
+            userCount: {
+                online: onlineUserCount
+            },
+            disboardServerUrl: absoluteUrlString,
+            iconUrl: iconUrlString || null,
+            joinLinkUrl: joinUrlString,
+            bumpedAt: bumpedAtISO,
+            reviews: []
+        };
+    
+        serverStore.push(id);
+
+        await dataset.pushData(serverData);
     }
 
     // Check if we are being shown results
@@ -103,7 +147,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
 router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request, response }) => {
 
     if (response.statusCode == 404) {
-        console.log(`Request for URL '${request.url}' returned 404, skipping...`);
+        log.warning(`Request for URL '${request.url}' returned 404, skipping...`);
         return;
     }
 
@@ -121,7 +165,7 @@ router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request,
         throw `Could not get id from '${request.url}'.`;
     }
     if (serverStore.contains(id)) {
-        console.log(`Server with id '${id}' is already in the collection, skipping...`)
+        log.info(`Server with id '${id}' is already in the collection, skipping...`)
         return;
     }
 
@@ -129,7 +173,7 @@ router.addHandler(RouteHandlerLabels.ServerDetail, async ({ $, crawler, request,
 
     const joinRelativeUri = $('.fixed-join-button a').attr('href');
     if (!joinRelativeUri) {
-        console.log(`Anchor for server '${name}' at '${request.url}' did not contain href attribute. Setting to null.`);
+        log.warning(`Link for server '${name}' at '${request.url}' did not contain href attribute. Setting to null.`);
     }
     const joinUrlString = joinRelativeUri ? new URL(joinRelativeUri, linkGenerators.rootUrl()).href : null;
 

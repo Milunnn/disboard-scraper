@@ -28,6 +28,7 @@ export const input: InputSearch = {
     sort: null,
     scrapeReviews: null,
     sessionId: null,
+    scrapeDetail: null,
     
     // Overrides
     ...((await KeyValueStore.getInput()) || {}) as Partial<InputSearch> & Pick<InputSearch, "keywords"> // Keywords is required
@@ -52,11 +53,11 @@ const crawler = new CheerioCrawler({
     }),
     sessionPoolOptions: {
         sessionOptions: {
-            maxUsageCount: 5,
+            maxUsageCount: 3, // Heavily rate limited, need to rotate sessions (throws 403)
             maxErrorScore: 1
         }
     },
-    maxRequestRetries: 10,
+    maxRequestRetries: 10, 
     requestQueue: await Actor.openRequestQueue(input.sessionId || undefined) // Handle the session ID
 });
 

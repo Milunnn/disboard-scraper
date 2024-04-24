@@ -34,6 +34,7 @@ export interface InputSearch {
     startPageNumber: number | null;
     endPageNumber: number | null;
 
+    scrapeDetail: boolean | null;
     scrapeReviews: boolean | null;
 }
 
@@ -44,7 +45,7 @@ export interface ServerDetail {
     category: string;
     tags: Array<string>;
     userCount: {
-        total: number;
+        total?: number;
         online: number;
     };
     disboardServerUrl: string;
@@ -70,4 +71,9 @@ export interface ServerReview {
      * ISO-formatted string.
      */
     reviewedAt: string | null;
+}
+
+
+export interface UserData {
+
 }
