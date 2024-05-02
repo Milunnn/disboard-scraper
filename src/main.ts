@@ -85,6 +85,7 @@ const crawler = new CheerioCrawler({
                 'Sec-Fetch-Mode': 'navigate',
                 'Sec-Fetch-Site': 'none',
                 'Sec-Fetch-User': '?1',
+                'Host': 'disboard.org',
 
                 'Upgrade-Insecure-Requests': '1',
 
