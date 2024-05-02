@@ -1,4 +1,4 @@
-import { Actor } from "apify";
+import { Actor, log } from "apify";
 import type { keyValueStore } from "../main.js";
 
 /**
@@ -28,13 +28,13 @@ export default abstract class PersistedStore<T extends {}, SerializedT extends {
         this.state = (loadedState && this.deserializeValue(loadedState)) || this.getDefaultValue();
 
         // For logging purposes, write the correct thing
-        console.log(`Store "${this.storeDescription}" initialized ${loadedState ? 'from persisted storage' : 'with default state'}`, this.state);
+        log.info(`Store "${this.storeDescription}" initialized ${loadedState ? 'from persisted storage' : 'with default state'}`, this.state);
     }
 
     async initStore(kvStore: typeof keyValueStore, logIntervalMs = -1) {
         if (logIntervalMs > 0) {
             this.interval = setInterval(() => {
-                console.log(`Store "${this.storeDescription}" state: `, this.state);
+                log.info(`Store "${this.storeDescription}" state: `, this.state);
             }, logIntervalMs);
         }
 

@@ -42,7 +42,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
         const bumpedAtText = $(card).find('.server-bumped-at').attr('title');
 
         if (!relativeUri) {
-            console.log(`Anchor for server '${name}' at '${request.url}' did not contain href attribute. Skipping.`);
+            log.warning(`Anchor for server '${name}' at '${request.url}' did not contain href attribute. Skipping.`);
             continue;
         }
 
@@ -114,12 +114,12 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
 
     // If we are also being shown no results, stop the search
     if ($('.pagination > .next.disabled').length >= 1 || listingCards.length == 0) {
-        console.log(`Crawler has reached the end page for keyword '${request.userData.keyword}'.`);
+        log.info(`Crawler has reached the end page for keyword '${request.userData.keyword}'.`);
         return;
     }
 
     if (input.endPageNumber && currentPageNumber >= input.endPageNumber) {
-        console.log(`Crawler has reached the end page for keyword '${keyword}'`);
+        log.info(`Crawler has reached the end page for keyword '${keyword}'`);
         return;
     }
 
@@ -252,7 +252,7 @@ router.addHandler(RouteHandlerLabels.ServerReviewList, async ({ $, crawler, requ
     const isAtEnd = $('.pagination > .next.disabled').length >= 1;
 
     if ((!paginationExists || isAtEnd) || reviewCards.length == 0) {
-        console.log(`Crawler has reached the end page of reviews for server '${serverData.id}'.`);
+        log.info(`Crawler has reached the end page of reviews for server '${serverData.id}'.`);
 
         await dataset.pushData(serverData);
 
