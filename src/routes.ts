@@ -83,7 +83,7 @@ router.addHandler(RouteHandlerLabels.ServerList, async ({ $, crawler, request })
         }
         if (serverStore.contains(id)) {
             log.info(`Server with id '${id}' is already in the collection, skipping...`)
-            return;
+            continue;
         }
 
         const serverData: ServerDetail = {
