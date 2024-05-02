@@ -53,7 +53,7 @@ const crawler = new CheerioCrawler({
             session.markBad();
 
             if ((request.retryCount + 1) % 5 == 0) {
-                const waitInterval = 5000 * ((request.retryCount + 1) - 5) + Math.floor(Math.random() * 1000);
+                const waitInterval = 5000 * ((request.retryCount + 1) - 5 + 1) + Math.floor(Math.random() * 1000);
                 log.info(`[BACKOFF] Waiting for ${waitInterval} ms...`);
                 await sleep(waitInterval);
             }
