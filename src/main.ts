@@ -1,5 +1,5 @@
 import { Actor } from 'apify';
-import { CheerioCrawler, KeyValueStore, log } from 'crawlee';
+import { CheerioCrawler, KeyValueStore, log, sleep } from 'crawlee';
 import { initForKeyword } from './helpers.js';
 import { router } from './routes.js';
 import { serverStore } from './stores/server-store.js';
@@ -48,9 +48,15 @@ const crawler = new CheerioCrawler({
             await dataset.pushData(request.userData.serverData);
         }
     },
-    errorHandler: ({ response, session }) => {
+    errorHandler: async ({ response, session, request }) => {
         if (session && response?.statusCode == 403) {
             session.markBad();
+
+            if (request.retryCount > 5) {
+                const waitInterval = 5000 * (request.retryCount - 5) + Math.floor(Math.random() * 1000);
+                log.info(`[BACKOFF] Waiting for ${waitInterval} ms...`);
+                await sleep(waitInterval);
+            }
         }
     },
     preNavigationHooks: [
@@ -90,8 +96,8 @@ const crawler = new CheerioCrawler({
     }),
     sessionPoolOptions: {
         sessionOptions: {
-            maxUsageCount: 5, // Heavily rate limited, need to rotate sessions (throws 403)
-            maxErrorScore: 1
+            maxUsageCount: 50, 
+            maxErrorScore: 1 // Heavily rate limited, need to rotate sessions (throws 403)
         }
     },
     maxRequestRetries: 20,
