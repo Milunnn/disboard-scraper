@@ -85,10 +85,8 @@ const crawler = new CheerioCrawler({
                 'Sec-Fetch-Mode': 'navigate',
                 'Sec-Fetch-Site': 'none',
                 'Sec-Fetch-User': '?1',
-                'Host': 'disboard.org',
 
                 'Upgrade-Insecure-Requests': '1',
-
             };
         }
     ],
@@ -97,7 +95,7 @@ const crawler = new CheerioCrawler({
     }),
     sessionPoolOptions: {
         sessionOptions: {
-            maxUsageCount: 50, 
+            maxUsageCount: 5, 
             maxErrorScore: 1 // Heavily rate limited, need to rotate sessions (throws 403)
         }
     },
