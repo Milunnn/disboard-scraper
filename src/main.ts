@@ -99,6 +99,7 @@ const crawler = new CheerioCrawler({
             maxErrorScore: 1 // Heavily rate limited, need to rotate sessions (throws 403)
         }
     },
+    retryOnBlocked: true,
     maxRequestRetries: 20,
     requestQueue: await Actor.openRequestQueue(input.sessionId || undefined) // Handle the session ID
 });
